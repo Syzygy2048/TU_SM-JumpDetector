@@ -1,3 +1,0 @@
-The dataset is 1.5gb and I don't want to put that on github. Here's the link so you can download it yourself.
-
-https://owncloud.tuwien.ac.at/index.php/s/kf2FVPQqgYH8fq9
