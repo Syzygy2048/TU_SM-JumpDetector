@@ -1,5 +1,5 @@
 function [filenames, hands, feet, empty, jump1, jump2] = loadGroundTrush
-  [numarr, txtarr, rawarr] = xlsread('dataset/ground-truth.xlsx',-1);
+  [numarr, txtarr, rawarr] = xlsread('dataset/ground-truth.xlsx');
 
   filenames = char(strcat('dataset/', rawarr([2:end],2)));
   hands = rawarr([2:end],3);
