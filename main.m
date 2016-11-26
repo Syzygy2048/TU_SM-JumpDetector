@@ -1,5 +1,5 @@
-
-
+clear
+close all
 
 [filename, hands, feet, empty, jump1, jump2] = loadGroundTruth();
 

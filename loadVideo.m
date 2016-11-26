@@ -4,10 +4,16 @@ function video = loadVideo(path)
   numberOfFrames = v.NumberOfFrames;
   v = VideoReader(path);
   
-  beginFrame = 130;%1;%
-  debugFrameNumber = 180;%numberOfFrames;%
-  histData = cell(12, debugFrameNumber);%numberOfFrames);
- 
+  beginFrame = 1;%1;%
+  debugFrameNumber = 200;%numberOfFrames;%
+  numberOfFrames = debugFrameNumber; %DEBUG
+  
+  x = 1:numberOfFrames; %linspace containing frame indices from beginFrame to endFrame ("time axis")
+  histData = cell(12, debugFrameNumber);%numberOfFrames); %contains 4 hist data for each colour per column/frame
+  histDataMat = zeros(12, debugFrameNumber);
+  
+  figure, hold on
+  
   i = 0;
   while hasFrame(v)
       i = i + 1;
@@ -21,12 +27,13 @@ function video = loadVideo(path)
       Red = video(:,:,1);
       Green = video(:,:,2);
       Blue = video(:,:,3);
-
-      %Get histValues for each channel
+      
       disp((i - beginFrame)/(debugFrameNumber - beginFrame) * 100);
-      [yRed, x] = imhist(Red,4);
-      [yGreen, x] = imhist(Green,4);
-      [yBlue, x] = imhist(Blue,4);
+      
+       %Get histValues for each channel
+      [yRed, ] = imhist(Red,4);
+      [yGreen, ] = imhist(Green,4);
+      [yBlue, ] = imhist(Blue,4);
 
       histData{1,i} = yRed(1);
       histData{2,i} = yRed(2);
@@ -43,29 +50,28 @@ function video = loadVideo(path)
       histData{11,i} = yBlue(3);
       histData{12,i} = yBlue(4);
      
+      subplot(2,1,1), imshow(video);
+      
+      histDataMat(:,i) = cell2mat(histData(:,i));
+      subplot(2,1,2), plot(x, histDataMat(1,:), 'r-.', ... % 0-64 red -.-.-
+          x, histDataMat(2,:), 'r:', ...    % 65-128 red dotted
+          x, histDataMat(3,:), 'r--', ...   % 129-192 red  - - - -
+          x, histDataMat(4,:), 'r-', ...    % 193-256 red line
+          x, histDataMat(5,:), 'g-.', ...   % 0-64 green -.-.-
+          x, histDataMat(6,:), 'g:', ...    % 65-128 green dotted
+          x, histDataMat(7,:), 'g--', ...   % 129-192 green  - - - -
+          x, histDataMat(8,:), 'g-', ...    % 193-256 green line
+          x, histDataMat(9,:), 'b-.', ...   % 0-64 blue -.-.-
+          x, histDataMat(10,:), 'b:', ...   % 65 -128 blue dotted
+          x, histDataMat(11,:), 'b--', ...  % 129-192 blue  - - - -
+          x, histDataMat(12,:), 'b-');      % 193-256 blue line
+      drawnow;  
+      
       if i >= debugFrameNumber
-          figure, imshow(video);
           break;
       end
-  end 
+  end
   
-  numberOfFrames = debugFrameNumber;
-  x = beginFrame:numberOfFrames;
-  histData = cell2mat(histData);
-  figure, plot(x, histData(1,:), 'r-.', ...
-       x, histData(2,:), 'r:', ...
-       x, histData(3,:), 'r--', ...
-       x, histData(4,:), 'r-', ...
-       x, histData(5,:), 'g-.', ...
-       x, histData(6,:), 'g:', ...
-       x, histData(7,:), 'g--', ...
-       x, histData(8,:), 'g-', ... 
-       x, histData(9,:), 'b-.', ...
-       x, histData(10,:), 'b:', ...
-       x, histData(11,:), 'b--', ...
-       x, histData(12,:), 'b-');
-       
-  %Plot them together in one plot
-  %plot(x, yRed, 'Red', x, yGreen, 'Green', x, yBlue, 'Blue');
+  % do stuff
   
 end
