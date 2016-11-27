@@ -4,7 +4,7 @@ function video = loadVideo(path)
   numberOfFrames = v.NumberOfFrames;
   v = VideoReader(path);
   
-  beginFrame = 1;%1;%
+  beginFrame = 100;%1;%
   debugFrameNumber = 200;%numberOfFrames;%
   numberOfFrames = debugFrameNumber; %DEBUG
   
@@ -23,11 +23,20 @@ function video = loadVideo(path)
       end
       video = readFrame(v);
 
+      % we only need the upper middle of the frame (and watch whether there is blue in it)
+      videoPart = video(1:size(video,1)/2 , size(video,2)/4:3*size(video,2)/4 -1, :);
+      
+      % show the whole video and the upper middle part
+      subplot(2,2,1), imshow(video);
+      subplot(2,2,2), imshow(videoPart);
+      video = videoPart; % if active, only the upper middle part is used
+      
       %Split into RGB Channels
       Red = video(:,:,1);
       Green = video(:,:,2);
       Blue = video(:,:,3);
       
+      % percentage done
       disp((i - beginFrame)/(debugFrameNumber - beginFrame) * 100);
       
        %Get histValues for each channel
@@ -49,11 +58,9 @@ function video = loadVideo(path)
       histData{10,i} = yBlue(2);
       histData{11,i} = yBlue(3);
       histData{12,i} = yBlue(4);
-     
-      subplot(2,1,1), imshow(video);
       
       histDataMat(:,i) = cell2mat(histData(:,i));
-      subplot(2,1,2), plot(x, histDataMat(1,:), 'r-.', ... % 0-64 red -.-.-
+      subplot(2,2,4), plot(x, histDataMat(1,:), 'r-.', ... % 0-64 red -.-.-
           x, histDataMat(2,:), 'r:', ...    % 65-128 red dotted
           x, histDataMat(3,:), 'r--', ...   % 129-192 red  - - - -
           x, histDataMat(4,:), 'r-', ...    % 193-256 red line
@@ -65,7 +72,7 @@ function video = loadVideo(path)
           x, histDataMat(10,:), 'b:', ...   % 65 -128 blue dotted
           x, histDataMat(11,:), 'b--', ...  % 129-192 blue  - - - -
           x, histDataMat(12,:), 'b-');      % 193-256 blue line
-      drawnow;  
+      drawnow;
       
       if i >= debugFrameNumber
           break;
